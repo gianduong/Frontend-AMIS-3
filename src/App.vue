@@ -44,9 +44,7 @@ export default {
 };
 </script>
 <style lang='scss'>
-
-.theme--light.v-text-field{
-  
+.theme--light.v-text-field {
 }
 
 .theme--light.v-text-field > .v-input__control > .v-input__slot:before {
@@ -66,9 +64,8 @@ export default {
   border-bottom: 1.5px solid green;
 }
 
-.theme--light.v-input:not(.v-input--is-disabled) input:hover{
+.theme--light.v-input:not(.v-input--is-disabled) input:hover {
   border-color: #2ca01c;
   box-shadow: 1px 1px 1px #e6dada;
 }
-
 </style>

@@ -188,7 +188,7 @@
           <v-pagination
             v-model="pageInt"
             :length="totalPage"
-            color="#fff"
+            color= "#f4f5f6"
           ></v-pagination>
 
           <button
@@ -727,4 +727,5 @@ $color-active: #111;
     cursor: pointer;
   }
 }
+
 </style>

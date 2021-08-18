@@ -219,7 +219,11 @@
             <div class="attr-email">
               <div class="resize">
                 <label>Email</label>
-                <v-text-field :rules="EmailRules" v-model="employee.email" class="text-field"></v-text-field>
+                <v-text-field
+                  :rules="EmailRules"
+                  v-model="employee.email"
+                  class="text-field"
+                ></v-text-field>
                 <!-- <InputField
                   :label="'Email'"
                   v-model="employee.email"
@@ -336,7 +340,10 @@ export default {
         bankBranch: "",
       },
       EmailRules: [
-        v => /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) || "E-mail không hợp lệ."
+        (v) => !v ||
+          /^(([^<>()[\]\\.,;:\s@']+(\.[^<>()\\[\]\\.,;:\s@']+)*)|('.+'))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
+            v
+          ) || "Email không hợp lệ!",
       ],
       isCheckBox: false, // thay đổi CheckBox
       compareObject: null, // object lưu dữ liệu nhân viên để so sánh thay đổi
@@ -1032,8 +1039,7 @@ $color-title: #111;
   margin-left: 20px;
 }
 
-.text-field{
+.text-field {
   margin-top: -12px;
 }
-
 </style>
