@@ -91,7 +91,11 @@
         <table class="table">
           <thead>
             <tr>
-              <th class="table-head-checkbox"><div @click="isCheckBox = !isCheckBox"><CheckboxField :isCheck="isCheckBox"/></div></th>
+              <th class="table-head-checkbox">
+                <div @click="isCheckBox = !isCheckBox">
+                  <CheckboxField :isCheck="isCheckBox" />
+                </div>
+              </th>
               <th class="m-150">
                 Mã nhân viên
                 <div class="line"></div>
@@ -142,6 +146,7 @@
             <!--  -->
             <!-- employee detail -->
             <Employee
+              style="cursor:pointer"
               v-for="(employee, index) in listEmployee"
               :key="index"
               :index="index"
@@ -188,7 +193,8 @@
           <v-pagination
             v-model="pageInt"
             :length="totalPage"
-            color= "#f4f5f6"
+            color="green"
+            total-visible="5"
           ></v-pagination>
 
           <button
@@ -217,7 +223,7 @@ import Autocomplete from "../commons/ComboboxAutoComplete.vue";
 import InputField from "../commons/InputField.vue";
 import axios from "axios";
 import "../../css/table.css";
-import Employee from "./Employee.vue"; 
+import Employee from "./Employee.vue";
 import EmployeeDetail from "./EmployeeDetail.vue";
 import queryString from "query-string";
 import DialogNotify from "../commons/DialogNotify.vue";
@@ -437,7 +443,6 @@ export default {
     handleDuplicateEmployee(employeeId) {
       this.isCheckclone = true;
       this.getEmployeeInfo(employeeId);
-
     },
 
     /**
@@ -509,19 +514,36 @@ export default {
      * CreatedBy: NGDuong (19/07/2021)
      */
     async getEmployeeInfo(employeeId) {
+      // try {
+      //   this.showLoading = true; // hiện loading
+      //   const data = await axios.get(
+      //     `https://localhost:44376/api/v1/Employees/${employeeId}`
+      //   );
+      //   this.employeeDetail = data.data;
+      //   if(this.isCheckclone){
+      //     this.employeeDetail.employeeCode = await this.HandleGetNewEmployeeCode();
+      //   }
+      //   this.isCheckclone = false;
+      //   this.showLoading = false; // ẩn loading
+      //   this.showDialog();
+      // } catch (error) {this.showLoading = false;}
       try {
         this.showLoading = true; // hiện loading
-        const data = await axios.get(
-          `https://localhost:44376/api/v1/Employees/${employeeId}`
-        );
-        this.employeeDetail = data.data;
-        if(this.isCheckclone){
-          this.employeeDetail.employeeCode = await this.HandleGetNewEmployeeCode();
-        }
-        this.isCheckclone = false;
-        this.showLoading = false; // ẩn loading
-        this.showDialog();
-      } catch (error) {this.showLoading = false;}
+        var code = await this.HandleGetNewEmployeeCode();
+        await axios
+          .get(`https://localhost:44376/api/v1/Employees/${employeeId}`)
+          .then((data) => {
+            this.employeeDetail = data.data;
+            if (this.isCheckclone) {
+              this.employeeDetail.employeeCode = code;
+            }
+            this.isCheckclone = false;
+            this.showLoading = false; // ẩn loading
+            this.showDialog();
+          }); 
+      } catch (error) {
+        this.showLoading = false;
+      }
     },
 
     /**
@@ -532,12 +554,14 @@ export default {
       var newCode;
       // debugger
       try {
-        await axios.get(
-          "https://localhost:44376/api/v1/Employees/NewCode"
-        ).then((data)=>{
-          newCode = data.data;
-        });
-      } catch (error) { newCode = ""}
+        await axios
+          .get("https://localhost:44376/api/v1/Employees/NewCode")
+          .then((data) => {
+            newCode = data.data;
+          });
+      } catch (error) {
+        newCode = "";
+      }
       return newCode;
     },
 
@@ -727,5 +751,4 @@ $color-active: #111;
     cursor: pointer;
   }
 }
-
 </style>

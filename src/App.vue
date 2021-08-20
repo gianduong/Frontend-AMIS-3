@@ -44,6 +44,7 @@ export default {
 };
 </script>
 <style lang='scss'>
+
 .theme--light.v-text-field {
 }
 
@@ -68,4 +69,9 @@ export default {
   border-color: #2ca01c;
   box-shadow: 1px 1px 1px #e6dada;
 }
+
+.theme--light > .v-pagination > .v-pagination__item{
+  border: none;
+}
+
 </style>

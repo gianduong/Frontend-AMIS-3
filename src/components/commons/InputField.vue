@@ -22,7 +22,7 @@
             ? 'form-email'
             : null,
         ]"
-        max="2021-08-17"
+        max="2021-08-21"
       />
       <div v-if="searchField" class="search-icon"></div>
       <div v-if="required && errorNotify.status" class="validateMessage">

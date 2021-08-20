@@ -131,6 +131,7 @@
                     :label="'Ngày sinh'"
                     type="date"
                     v-model="employee.dateOfBirth"
+                    :errorNotify="errorNotifyDob"
                   />
                 </div>
               </div>
@@ -174,6 +175,7 @@
                     :label="'Ngày cấp'"
                     type="date"
                     v-model="employee.identityDate"
+                    :errorNotify="errorNotifyIdentityDate"
                   />
                 </div>
               </div>
@@ -202,18 +204,30 @@
           <div class="bottom-2">
             <div class="attr-phone">
               <div class="resize">
-                <InputField
+                <label>ĐT di động</label>
+                <v-text-field
+                  :rules="PhoneNumberRules"
+                  v-model="employee.phoneNumber"
+                  class="text-field"
+                ></v-text-field>
+                <!-- <InputField
                   :label="'ĐT di động'"
                   v-model="employee.phoneNumber"
-                />
+                /> -->
               </div>
             </div>
             <div class="attr-homePhone">
               <div class="resize">
-                <InputField
+                <label>ĐT cố định</label>
+                <v-text-field
+                  :rules="HomePhoneRules"
+                  v-model="employee.landlinePhone"
+                  class="text-field"
+                ></v-text-field>
+                <!-- <InputField
                   :label="'ĐT cố định'"
                   v-model="employee.landlinePhone"
-                />
+                /> -->
               </div>
             </div>
             <div class="attr-email">
@@ -339,11 +353,29 @@ export default {
         bankName: "",
         bankBranch: "",
       },
+
+      PhoneNumberRules: [
+        // Validate số điện thoại
+        (v) =>
+          !v ||
+          /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/.test(v) ||
+          "Số điện thoại không hợp lệ!",
+      ],
+      HomePhoneRules: [
+        // validate số điện thoại bàn
+        (v) =>
+          !v ||
+          /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{5})$/.test(v) ||
+          "Số điện thoại bàn không hợp lệ!",
+      ],
       EmailRules: [
-        (v) => !v ||
+        // validate email
+        (v) =>
+          !v ||
           /^(([^<>()[\]\\.,;:\s@']+(\.[^<>()\\[\]\\.,;:\s@']+)*)|('.+'))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
             v
-          ) || "Email không hợp lệ!",
+          ) ||
+          "Email không hợp lệ!",
       ],
       isCheckBox: false, // thay đổi CheckBox
       compareObject: null, // object lưu dữ liệu nhân viên để so sánh thay đổi
@@ -363,6 +395,16 @@ export default {
         errorMessage: "",
       },
       errorNotifyDepartment: {
+        // trạng thái & thông điệp lỗi
+        status: false,
+        errorMessage: "",
+      },
+      errorNotifyDob: {
+        // trạng thái & thông điệp lỗi
+        status: false,
+        errorMessage: "",
+      },
+      errorNotifyIdentityDate: {
         // trạng thái & thông điệp lỗi
         status: false,
         errorMessage: "",
@@ -420,6 +462,8 @@ export default {
           errorMessage: "",
         };
         this.errorNotifyCode = { ...resetData }; // reset hiển thị validate Code
+        this.errorNotifyDob = { ...resetData };
+        this.errorNotifyIdentityDate = { ...resetData };
         this.errorNotifyFullName = { ...resetData }; // reset hiển thị validate fullName
         this.errorNotifyDepartment = { ...resetData }; // reset hiển thị validate department
         this.saveAndAddMode = false;
@@ -619,7 +663,63 @@ export default {
         this.dialogNotifyError = true;
         isValid = false;
       }
+      if (this.employee.dateOfBirth != null) {
+        var dob = this.employee.dateOfBirth.split("-"); // tách thành ngày tháng năm riêng để gán thành Date
+        var dateOfBirth = new Date();
+        dateOfBirth.setFullYear(dob[0], dob[1] - 1, dob[2]); // chuyển thành ngày để so sánh
+        var today = new Date(); // lấy ngày hiện tại
+        var now = new Date();
+        now.setFullYear(
+          today.getFullYear(),
+          today.getMonth(),
+          today.getDate()
+        );
+        if (dateOfBirth > now) { // so sánh
+          this.dialogNotifyError = true;
+          this.notifyMessage =
+            "Ngày sinh không được vượt quá ngày hiện tại";
+          isValid = false;
+        }
+      }
+      if (this.employee.identityDate != null) {
+        var dob = this.employee.identityDate.split("-");// tách thành ngày tháng năm riêng để gán thành Date
+        var identityDate = new Date();
+        identityDate.setFullYear(dob[0], dob[1] - 1, dob[2]); // chuyển thành ngày để so sánh
+        var today = new Date(); // lấy ngày hiện tại
+        var now = new Date();
+        now.setFullYear(
+          today.getFullYear(),
+          today.getMonth(),
+          today.getDate()
+        );
+        if (identityDate > now) { // so sánh
+          this.dialogNotifyError = true;
+          this.notifyMessage =
+            "Ngày cấp không được vượt quá ngày hiện tại";
+          isValid = false;
+        }
+      }
+      if (
+        this.employee.identityDate != null &&
+        this.employee.dateOfBirth != null
+      ) {
+        var dob = this.employee.dateOfBirth.split("-");
+        var firstDate = new Date();
+        firstDate.setFullYear(dob[0], dob[1] - 1, dob[2]);  // chuyển thành ngày để so sánh
+        var identityDate = this.employee.identityDate.split("-");
+        var secondDate = new Date();
+        secondDate.setFullYear(  // chuyển thành ngày để so sánh
+          identityDate[0],
+          identityDate[1] - 1,
+          identityDate[2]
+        );
 
+        if (firstDate > secondDate) { // so sánh
+          this.dialogNotifyError = true;
+          this.notifyMessage = "Ngày cấp CMT không được nhỏ hơn ngày sinh";
+          isValid = false;
+        }
+      }
       return isValid;
     },
 
@@ -657,6 +757,8 @@ export default {
             errorMessage: "",
           };
           this.errorNotifyCode = { ...resetData }; // reset hiển thị validate Code
+          this.errorNotifyDob = { ...resetData };
+          this.errorNotifyIdentityDate = { ...resetData };
           this.errorNotifyFullName = { ...resetData }; // reset hiển thị validate fullName
           this.errorNotifyDepartment = { ...resetData }; // reset hiển thị validate department
           this.$emit("resetEmployeeDetail");
@@ -712,6 +814,8 @@ export default {
             errorMessage: "",
           };
           this.errorNotifyCode = { ...resetData }; // reset hiển thị validate Code
+          this.errorNotifyDob = { ...resetData };
+          this.errorNotifyIdentityDate = { ...resetData };
           this.errorNotifyFullName = { ...resetData }; // reset hiển thị validate fullName
           this.errorNotifyDepartment = { ...resetData }; // reset hiển thị validate department
           this.$emit("resetEmployeeDetail");
