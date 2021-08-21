@@ -433,16 +433,13 @@ export default {
       );
       this.employee.identityDate = this.formatDateEmployee(
         this.employee.identityDate
-      );
-      setTimeout(() => {
-        this.$refs.toFocus.handleFocus();
-      }, 200);
+      );    
     } else {
       this.getNewEmployeeCode();
-      setTimeout(() => {
+    }
+    setTimeout(() => {
         this.$refs.toFocus.handleFocus();
       }, 200);
-    }
   },
   //#endregion
 
@@ -874,7 +871,7 @@ export default {
         if (!this.handleCompareObject(newOb, this.employee)) {
           this.dialogNotifyConfirm = true;
         } else this.$emit("handleCloseDialog");
-      } else this.dialogNotifyConfirm = true;
+      } else this.$emit("handleCloseDialog");
     },
 
     /**
