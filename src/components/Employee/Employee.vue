@@ -28,7 +28,7 @@
 
         <div class="choose-btn" @focusout="closeDrop">
           <!-- dropdown -->
-          <div class="drop-container" tabindex="0" >
+          <div class="drop-container" tabindex="0">
             <div
               class="drop-icon-wrap"
               @click="handelShowDrop"
@@ -77,12 +77,12 @@
 import CheckboxField from "../commons/CheckboxField.vue";
 import DialogNotify from "../commons/DialogNotify.vue";
 import axios from "axios";
-import moment from 'moment'
+import moment from "moment";
 //#endregion
 
 export default {
   //#region Props
-  props: ["employee", "listDeparment", "index","isCheck", "isCheckBox"],
+  props: ["employee", "listDeparment", "index", "isCheck", "isCheckBox"],
   //#endregion
 
   //#region Components
@@ -95,8 +95,11 @@ export default {
   //#region Data
   data() {
     return {
+      /**
+       * thay đổi giá trị prop
+       */
       isCheckBoxSingle: false, // Thay đổi giá trị prop
-      dialogConfirm: false,
+      dialogConfirm: false, // cảnh báo khi đóng dialog
       showDrop: false, // đóng mở dropdown
       showDropTop: false, // điều chỉnh hướng mở option lên trên
     };
@@ -104,12 +107,12 @@ export default {
   //#endregion
 
   // #region Watch
-  watch:{
+  watch: {
     /**
      * cập nhật sự thay đổi giá trị của isCheckBox gửi lên từ content
-     * CreatedBy: NGDuong (24/07/2021)
+     * CreatedBy: NGDuong (19/08/2021)
      */
-    isCheckBox: function(value){
+    isCheckBox: function (value) {
       this.isCheckBoxSingle = value;
     },
   },
@@ -119,7 +122,7 @@ export default {
   filters: {
     /**
      * Hàm fomat thời gian
-     * Createdby: NGDuong (19/07/2021)
+     * Createdby: NGDuong (19/08/2021)
      */
     formatDate(value) {
       if (value) {
@@ -128,7 +131,7 @@ export default {
     },
     /**
      * hàm fomat giới tính
-     * Createdby: NGDuong (19/07/2021)
+     * Createdby: NGDuong (19/08/2021)
      */
     fomatGender(value) {
       if (value == 0) {
@@ -139,7 +142,6 @@ export default {
         return "Khác";
       }
     },
-    
   },
   //#endRegion
 
@@ -147,7 +149,7 @@ export default {
   computed: {
     /**
      * format dữ liệu tên phòng ban theo id nhận được
-     * CreateBy : NGDuong(20/07/2021)
+     * CreateBy : NGDuong(19/08/2021)
      */
     formatDeparmentName() {
       // debugger
@@ -163,9 +165,9 @@ export default {
   //#region Methods
   methods: {
     /**
-     * Lấy id nhân viên
+     * Lấy id nhân viên để thực hiện tác vụ sửa / nhân bản
      * @param="id" : id nhân viên cần lấy thông tin
-     * CreateBy : NGDuong(20/07/2021)
+     * CreateBy : NGDuong(19/08/2021)
      */
     getEmployeeInfoId(id) {
       this.$emit("handleGetEmployeeID", id);
@@ -174,34 +176,35 @@ export default {
     /**
      * Xóa nhân viên theo id
      * @param="employeeId" : mã nhân viên cần xóa
-     * CreatedBy : NGDuong(20/07/2021)
+     * CreatedBy : NGDuong(19/08/2021)
      */
     async deleteEmployee(employeeId) {
       try {
         this.showLoading = true; // hiện loading
-        await axios({
-          method: "delete",
-          url: `https://localhost:44376/api/v1/Employees/${this.employee.employeeId}`,
-          data: employeeId,
-        });
-        this.showLoading = false; // ẩn loading
-        this.dialogConfirm = false; // đóng dialog confirm
-        this.$emit("handleReload"); // reload sau khi xóa
+        await axios
+          .delete(
+            `https://localhost:44376/api/v1/Employees/${this.employee.employeeId}`
+          )
+          .then((data) => {
+            this.showLoading = false; // ẩn loading
+            this.dialogConfirm = false; // đóng dialog confirm
+            this.$emit("handleReload"); // reload sau khi xóa
+          });
       } catch (error) {
-        console.log(error);
+        showLoading = false;
       }
     },
 
     /**
      * thay đổi giá trị checkbox
-     * CreatedBy: NGDuong (21/07/2021)
+     * CreatedBy: NGDuong (19/08/2021)
      */
-    handleCheckBox(){
+    handleCheckBox() {
       this.isCheckBoxSingle = !this.isCheckBoxSingle;
     },
     /**
      * đóng dialog confirm
-     * CreatedBy : NGDuong(21/07/2021)
+     * CreatedBy : NGDuong(19/08/2021)
      */
     handleCloseDialog() {
       this.dialogConfirm = false;
@@ -209,7 +212,7 @@ export default {
 
     /**
      * dóng mở dropdown
-     * CreatedBy : NGDuong(21/07/2021)
+     * CreatedBy : NGDuong(19/08/2021)
      */
     handelShowDrop(e) {
       if (e.screenY > 550) {
@@ -223,7 +226,7 @@ export default {
 
     /**
      * đóng option và reset các thuộc tính
-     * CreatedBy : NGDuong(21/07/2021)
+     * CreatedBy : NGDuong(19/08/2021)
      */
     closeDrop() {
       this.showDrop = false;

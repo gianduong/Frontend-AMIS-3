@@ -60,7 +60,7 @@ export default {
   methods: {
     /**
      * Đảo ngược trạng thái popup
-     * Createdby: NGDuong (20/07/2021) 
+     * Createdby: NGDuong (19/08/2021) 
      */
     toggleSuggestion() {
       if (this.isShow) {
@@ -73,14 +73,14 @@ export default {
     },
     /**
      * hàm gọi lớp cha để thay đổi pageIndex
-     * CreatedBy: NGDuong (15/07/2021)
+     * CreatedBy: NGDuong (19/08/2021)
      */
     changeValue(){
       this.$emit("ChangeValue", this.suggestions[this.current].value);
     },
     /**
      * Hiển thị popup
-     * CreatedBy: NGDuong (15/07/2021)
+     * CreatedBy: NGDuong (19/08/2021)
      */
     showSuggestion() {
       this.$el.querySelector("input").focus();
@@ -89,7 +89,7 @@ export default {
     },
     /**
      * Chọn một suggesstion
-     * CreatedBy: NGDuong (15/07/2021)
+     * CreatedBy: NGDuong (19/08/2021)
      */
     clickSuggestion(suggestion, index) {
       this.current = index;
@@ -98,7 +98,7 @@ export default {
     },
     /**
      * Blur input
-     * CreatedBy: NGDuong (15/07/2021)
+     * CreatedBy: NGDuong (19/08/2021)
      */
     onBlur() {
       setTimeout(() => {
@@ -108,7 +108,7 @@ export default {
     },
     /**
      * Nhấn enter
-     * CreatedBy: NGDuong (15/07/2021)
+     * CreatedBy: NGDuong (19/08/2021)
      */
     enter() {
       this.isShow = false;
@@ -117,14 +117,14 @@ export default {
     },
     /**
      * Nhấn up
-     * CreatedBy: NGDuong (15/07/2021)
+     * CreatedBy: NGDuong (19/08/2021)
      */
     up() {
       if (this.current > 0) this.current--;
     },
     /**
      * Nhấn down
-     * CreatedBy: NGDuong (15/07/2021)
+     * CreatedBy: NGDuong (19/08/2021)
      */
     down() {
       if (this.current < this.suggestions.length - 1) this.current++;

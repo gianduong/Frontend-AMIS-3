@@ -5,7 +5,11 @@
       <!-- Dialog add  -->
       <!--  -->
       <div class="dialog-add-update">
-        <v-dialog v-model="dialogAddOrUpdate" width="900px" :persistent="true">
+        <v-dialog
+          v-model="isShowDialogAddOrUpdate"
+          width="900px"
+          :persistent="true"
+        >
           <template v-slot:activator="{ on, attrs }">
             <div class="btn-add" v-bind="attrs" v-on="on">
               <Button content="Thêm mới nhân viên" v-bind="attrs" v-on="on" />
@@ -20,7 +24,7 @@
               @handleReload="getListEmployee"
               @resetEmployeeDetail="resetEmployeeDetail"
               :modeUpdate="modeUpdate"
-              :dialogAddOrUpdate="dialogAddOrUpdate"
+              :dialogAddOrUpdate="isShowDialogAddOrUpdate"
               :listDepartment="listDepartment"
               @onNotify="handleNotify"
             />
@@ -33,7 +37,7 @@
       <!-- Dialog notify -->
       <!--  -->
       <!-- thông báo khi thêm thành công -->
-      <v-dialog v-model="dialogNotify" width="444px">
+      <v-dialog v-model="dialogNotify" width="444px" :persistent="false">
         <DialogNotify
           @closeDialog="handleCloseDialog"
           type="notify-success"
@@ -54,7 +58,7 @@
             :searchField="true"
             v-model="filterValue"
             v-debounce:300ms="handelFilter"
-            ref="inputFocus"
+            ref="inputSearch"
           />
         </div>
         <v-tooltip bottom style="z-index: 100000">
@@ -146,7 +150,7 @@
             <!--  -->
             <!-- employee detail -->
             <Employee
-              style="cursor:pointer"
+              style="cursor: pointer"
               v-for="(employee, index) in listEmployee"
               :key="index"
               :index="index"
@@ -248,8 +252,8 @@ export default {
     return {
       isCheckclone: false, // kiểm tra nhân bản
       isCheckBox: false, // thay đổi checkBox
-      filterValue: null, // giá trị ô filter
-      dialogAddOrUpdate: false, // ẩn hiện dialog
+      filterValue: "", // giá trị ô filter
+      isShowDialogAddOrUpdate: false, // ẩn hiện dialog
       isShowTableSelect: false,
       listEmployee: [], // Danh sách nhân viên
       showLoading: false, // ẩn hiện loading
@@ -292,7 +296,7 @@ export default {
     this.getListDepartment(); // lấy danh sách phòng ban
     setTimeout(() => {
       //focus vào ô tìm kiếm
-      this.$refs.inputFocus.handleFocus();
+      this.$refs.inputSearch.handleFocus();
     }, 200);
   },
 
@@ -300,7 +304,7 @@ export default {
   watch: {
     /**
      * Bắt thay đổi của pageInt
-     * CreatedBy: NGDuong (19/07/2021)
+     * CreatedBy: NGDuong (17/08/2021)
      */
     pageInt() {
       this.getListEmployee();
@@ -308,7 +312,7 @@ export default {
 
     /**
      * bắt thay đổi của pageSize
-     * CreatedBy: NGDuong (19/07/2021)
+     * CreatedBy: NGDuong (17/08/2021)
      */
     pageSize() {
       this.getListEmployee();
@@ -322,20 +326,21 @@ export default {
     /**
      * Tạo chuỗi queryString
      * return chuỗi queryString
-     * CreatedBy: NGDuong (19/07/2021)
+     * CreatedBy: NGDuong (17/08/2021)
      */
     dataFilter() {
+      var fitersStrings = this.filterValue.trim();
       const data = {
         pageInt: this.pageInt,
         pageSize: this.pageSize,
-        filterString: this.filterValue,
+        filterString: fitersStrings,
       };
       return queryString.stringify(data);
     },
     /**
      * Tính số lượng page
      * return : Số lượng page
-     * CreatedBy: NGDuong (19/07/2021)
+     * CreatedBy: NGDuong (17/08/2021)
      */
     totalPage() {
       return Math.ceil(this.totalItem / this.pageSize);
@@ -347,23 +352,23 @@ export default {
     //#region Các hàm xử lý logic
     /**
      * bắt sự kiện đóng dialog của dialog con
-     * CreatedBy: NGDuong (19/07/2021)
+     * CreatedBy: NGDuong (17/08/2021)
      */
     closeDialog() {
-      this.dialogAddOrUpdate = false;
+      this.isShowDialogAddOrUpdate = false;
     },
 
     /**
      * bắt sự kiện mở dialog của dialog con
-     * CreatedBy: NGDuong (19/07/2021)
+     * CreatedBy: NGDuong (17/08/2021)
      */
     showDialog() {
-      this.dialogAddOrUpdate = true;
+      this.isShowDialogAddOrUpdate = true;
     },
 
     /**
      * đóng dialog notify
-     * CreatedBy: NGDuong (19/07/2021)
+     * CreatedBy: NGDuong (17/08/2021)
      */
     handleCloseDialog() {
       this.dialogNotify = false;
@@ -371,7 +376,7 @@ export default {
 
     /**
      * Bắt dự kiện chỉnh sửa
-     * CreatedBy: NGDuong (19/07/2021)
+     * CreatedBy: NGDuong (17/08/2021)
      */
     getEmployeeID(id) {
       this.modeUpdate = true; //thay đổi sang updateMode khi thực hiện chỉnh sửa;
@@ -380,7 +385,7 @@ export default {
 
     /**
      * Di chuyển vị trí div theo con trỏ chuột
-     * Createdby: NGDuong (19/07/2021)
+     * Createdby: NGDuong (17/08/2021)
      */
     mouseLocation() {
       this.$refs.position.style.top += 10 + "px";
@@ -389,7 +394,7 @@ export default {
 
     /**
      * Reset EmployeeDetail and mode update
-     * CreatedBy: NGDuong (19/07/2021)
+     * CreatedBy: NGDuong (17/08/2021)
      */
     resetEmployeeDetail() {
       this.employeeDetail = null;
@@ -398,7 +403,7 @@ export default {
 
     /**
      * Chuyển đến page đằng trước
-     * NGDuong (20/07/2021)
+     * NGDuong (20/08/2021)
      */
     handlePrev() {
       if (this.pageInt > 1) {
@@ -408,7 +413,7 @@ export default {
 
     /**
      * Chuyển đến page phía sau
-     * NGDuong (20/07/2021)
+     * NGDuong (20/08/2021)
      */
     handleNext() {
       if (this.pageInt < this.totalPage) {
@@ -419,7 +424,7 @@ export default {
     /**
      * lấy giá trị pageSize mới
      * @param = "value" : giá trị của page size
-     * NGDuong (20/07/2021)
+     * NGDuong (20/08/2021)
      */
     handleChangeValue(value) {
       this.pageSize = value;
@@ -428,7 +433,7 @@ export default {
     /**
      * Hiển thị thông bán cho người dùng
      * @param="message" : Nội dung thông báo cần hiển thị
-     * NGDuong (20/07/2021)
+     * NGDuong (20/08/2021)
      */
     handleNotify(message) {
       this.notifyMessage = message;
@@ -438,7 +443,7 @@ export default {
     /**
      * thực hiện nhân bản thông tin nhân viên
      * @param="employeeId" : id nhân viên cần lấy thông tin
-     * NGDuong (20/07/2021)
+     * NGDuong (20/08/2021)
      */
     handleDuplicateEmployee(employeeId) {
       this.isCheckclone = true;
@@ -447,7 +452,7 @@ export default {
 
     /**
      * Refresh danh sách nhân viên
-     * CreatedBy: NGDuong (19/07/2021)
+     * CreatedBy: NGDuong (17/08/2021)
      */
     RefreshEmployee() {
       this.filterValue = "";
@@ -455,7 +460,7 @@ export default {
     },
     /**
      * Tìm kiếm theo tên hoặc mã nhân viên
-     * NGDuong (20/07/2021)
+     * NGDuong (20/08/2021)
      */
     handelFilter() {
       this.pageInt = 1;
@@ -467,7 +472,7 @@ export default {
 
     /**
      * Lấy danh sách nhân viên
-     * CreatedBy: NGDuong (19/07/2021)
+     * CreatedBy: NGDuong (17/08/2021)
      */
     async getListEmployee() {
       // debugger;
@@ -489,7 +494,7 @@ export default {
 
     /**
      * Lấy danh sách phòng ban
-     * CreatedBy: NGDuong (19/07/2021)
+     * CreatedBy: NGDuong (17/08/2021)
      */
     async getListDepartment() {
       try {
@@ -511,22 +516,9 @@ export default {
     /**
      * Lấy thông tin nhân viên theo id
      * @param="employeeId" : id nhân viên cần lấy thông tin
-     * CreatedBy: NGDuong (19/07/2021)
+     * CreatedBy: NGDuong (17/08/2021)
      */
     async getEmployeeInfo(employeeId) {
-      // try {
-      //   this.showLoading = true; // hiện loading
-      //   const data = await axios.get(
-      //     `https://localhost:44376/api/v1/Employees/${employeeId}`
-      //   );
-      //   this.employeeDetail = data.data;
-      //   if(this.isCheckclone){
-      //     this.employeeDetail.employeeCode = await this.HandleGetNewEmployeeCode();
-      //   }
-      //   this.isCheckclone = false;
-      //   this.showLoading = false; // ẩn loading
-      //   this.showDialog();
-      // } catch (error) {this.showLoading = false;}
       try {
         this.showLoading = true; // hiện loading
         var code = await this.HandleGetNewEmployeeCode();
@@ -540,7 +532,7 @@ export default {
             this.isCheckclone = false;
             this.showLoading = false; // ẩn loading
             this.showDialog();
-          }); 
+          });
       } catch (error) {
         this.showLoading = false;
       }
@@ -548,26 +540,26 @@ export default {
 
     /**
      * Lấy mã nhân viên mới
-     * CreatedBy: NGDuong(22/07/2021)
+     * CreatedBy: NGDuong(22/08/2021)
      */
     async HandleGetNewEmployeeCode() {
-      var newCode;
+      var newEmployeeCode;
       // debugger
       try {
         await axios
           .get("https://localhost:44376/api/v1/Employees/NewCode")
           .then((data) => {
-            newCode = data.data;
+            newEmployeeCode = data.data;
           });
       } catch (error) {
-        newCode = "";
+        newEmployeeCode = "";
       }
-      return newCode;
+      return newEmployeeCode;
     },
 
     /**
      * Xuất dữ liệu ra excel
-     * CreatedBy: NGDuong (19/07/2021)
+     * CreatedBy: NGDuong (17/08/2021)
      */
     exportExcel() {
       window.open("https://localhost:44376/api/v1/Employees/Export");

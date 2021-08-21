@@ -450,7 +450,7 @@ export default {
   watch: {
     /**
      * theo dõi đóng mở dialog và thực hiện các tác vụ
-     * CreatedBy : NGDuong(23/07/2021)
+     * CreatedBy : NGDuong(21/08/2021)
      */
     dialogAddOrUpdate() {
       // đóng dialog
@@ -483,7 +483,7 @@ export default {
 
     /**
      * Theo dõi giá trị thông tin nhân viên
-     * CreatedBy: NGDuong(23/07/2021)
+     * CreatedBy: NGDuong(21/08/2021)
      */
     employeeDetail() {
       // format giá trị ngày tháng
@@ -501,7 +501,7 @@ export default {
 
     /**
      * Theo dõi giá trị mã nhân viên thay đổi
-     * CreatedBy : NGDuong(23/07/2021)
+     * CreatedBy : NGDuong(21/08/2021)
      */
     "employee.employeeCode"() {
       if (this.employee.employeeCode.length > 0) {
@@ -511,7 +511,7 @@ export default {
 
     /**
      * Theo dõi giá trị tên nhân viên thay đổi
-     * CreatedBy: NGDuong(23/07/2021)
+     * CreatedBy: NGDuong(21/08/2021)
      */
     "employee.fullName"() {
       if (this.employee.fullName.length > 0) {
@@ -521,7 +521,7 @@ export default {
 
     /**
      * Theo dõi id phòng ban thay đổi
-     * CreatedBy : NGDuong(21/07/2021)
+     * CreatedBy : NGDuong(19/08/2021)
      */
     "employee.deparmentId"() {
       if (this.employee.deparmentId.length > 0) {
@@ -538,7 +538,7 @@ export default {
 
     /**
      * Cập nhật khi ấn enter ở button
-     * CreatedBy: NGDuong (20/07/2021)
+     * CreatedBy: NGDuong (19/08/2021)
      */
     enter(value) {
       if (value === "Hủy") {
@@ -552,7 +552,7 @@ export default {
     },
     /**
      * Thay đổi chế độ cất và thêm
-     * CreatedBy : NGDuong(22/07/2021)
+     * CreatedBy : NGDuong(20/08/2021)
      *
      */
     handleSaveAndAdd() {
@@ -567,7 +567,7 @@ export default {
 
     /**
      * thêm hoặc sửa nhân viên
-     * CreatedBy : NGDuong(22/07/2021)
+     * CreatedBy : NGDuong(20/08/2021)
      */
     handleAddOrUpdate() {
       // kiểm tra validate dữ liệu
@@ -584,7 +584,7 @@ export default {
 
     /**
      * Thay đổi tùy chọn là nhân viên hay nhà cung cấp
-     * CreatedBy: NGDuong (25/07/2021)
+     * CreatedBy: NGDuong (19/08/2021)
      */
     handleCheckBox() {
       this.isCheckBox = !this.isCheckBox;
@@ -592,14 +592,14 @@ export default {
 
     /**
      * Get dữ liệu đã chọn từ auto complete
-     * CreatedBy: NGDuong (20/07/2021)
+     * CreatedBy: NGDuong (19/08/2021)
      */
     getDepartmentId(data) {
       this.employee.deparmentId = data;
     },
     /**
      * đóng dialog cảnh báo
-     * CreatedBy : NGDuong(20/07/2021)
+     * CreatedBy : NGDuong(19/08/2021)
      */
 
     // #Region đóng mở cảnh báo
@@ -610,7 +610,7 @@ export default {
 
     /**
      * đóng dialog báo lỗi
-     * CreatedBy : NGDuong(20/07/2021)
+     * CreatedBy : NGDuong(19/08/2021)
      */
     handleCloseErrorDialog() {
       this.dialogNotifyError = false;
@@ -618,7 +618,7 @@ export default {
 
     /**
      * đóng dialog báo lỗi
-     * CreatedBy : NGDuong(20/07/2021)
+     * CreatedBy : NGDuong(19/08/2021)
      */
     handleCloseConfirmDialog() {
       this.dialogNotifyConfirm = false;
@@ -626,7 +626,7 @@ export default {
 
     /**
      * đóng tất cả dialog hiện tại
-     * CreatedBy: NGDuong(20/07/2021)
+     * CreatedBy: NGDuong(19/08/2021)
      */
     handleCloseAllDialog() {
       this.handleCloseConfirmDialog();
@@ -636,7 +636,7 @@ export default {
 
     /**
      * Kiểm tra dữ liệu
-     * CreatedBy : NGDuong(24/07/2021)
+     * CreatedBy : NGDuong(22/08/2021)
      */
     validate() {
       var isValid = true;
@@ -725,7 +725,7 @@ export default {
 
     /**
      * Hàm validate email
-     * CreatedBy: NGDuong (29/07/2021)
+     * CreatedBy: NGDuong (19/08/2021)
      */
     validateEmail() {
       if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(this.email)) {
@@ -737,7 +737,7 @@ export default {
 
     /**
      * thêm nhân viên
-     * CreatedBy : NGDuong(22/07/2021)
+     * CreatedBy : NGDuong(20/08/2021)
      */
     async handleAdd() {
       this.employee.employeeId = uuidv4();
@@ -779,7 +779,7 @@ export default {
      * return:
      *  true: Có tồn tại
      *  false: không tồn tại
-     * CreatedBy: NGDuong (21/07/2021)
+     * CreatedBy: NGDuong (19/08/2021)
      */
     async handleCheckCodeExists() {
       try {
@@ -795,7 +795,7 @@ export default {
 
     /**
      * Cập nhật thông tin nhân viên
-     * CreatedBy : NGDuong(22/07/2021)
+     * CreatedBy : NGDuong(20/08/2021)
      */
     async handelUpdate() {
       try {
@@ -834,7 +834,7 @@ export default {
     /**
      * format lại giá trị ngày tháng để hiển thị
      * @param="date" : giá trị ngày cần format
-     * CreatedBy : NGDuong(22/07/2021)
+     * CreatedBy : NGDuong(20/08/2021)
      */
     formatDateEmployee(date) {
       if (date) {
@@ -846,7 +846,7 @@ export default {
     /**
      * chuyển đổi giá trị ngày tháng về yyyy-mm-dd
      * @param="date" : giá trị ngày cần format
-     * CreatedBy : NGDuong(22/07/2021)
+     * CreatedBy : NGDuong(20/08/2021)
      */
     formatDate(date) {
       if (date) {
@@ -863,7 +863,7 @@ export default {
 
     /**
      * bắt sự kiện đóng dialog và thực hiện so sánh dữ liệu để đưa ra thông báo
-     * CreatedBy : NGDuong(23/07/2021)
+     * CreatedBy : NGDuong(21/08/2021)
      */
     onClose() {
       if (this.modeUpdate) {
@@ -881,7 +881,7 @@ export default {
      * Kiểm tra xem có sự thay đổi dữ liệu hay không
      * @param="object1" : object cần so sánh
      * @param="object2" : object cần so sách
-     * CreatedBy : NGDuong(24/07/2021)
+     * CreatedBy : NGDuong(22/08/2021)
      */
     handleCompareObject(object1, object2) {
       const keys1 = Object.keys(object1);
@@ -902,7 +902,7 @@ export default {
 
     /**
      * Lấy mã nhân viên mới
-     * CreatedBy: NGDuong(22/07/2021)
+     * CreatedBy: NGDuong(20/08/2021)
      */
     async getNewEmployeeCode() {
       try {

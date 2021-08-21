@@ -63,6 +63,7 @@ export default {
   border: 1px solid #babec5;
   outline: none;
   border-bottom: 1.5px solid green;
+  padding-left: 10px;
 }
 
 .theme--light.v-input:not(.v-input--is-disabled) input:hover {
