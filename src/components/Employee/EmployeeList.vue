@@ -44,6 +44,13 @@
           :notifyMessage="notifyMessage"
         />
       </v-dialog>
+      <v-dialog v-model="dialogNotifyDanger" width="444px">
+        <DialogNotify
+          @closeDialog="handleCloseDangerDialog"
+          type="notify-danger"
+          :notifyMessage="notifyMessage"
+        />
+      </v-dialog>
       <!--  -->
       <!-- End of dialog notify -->
     </div>
@@ -266,6 +273,7 @@ export default {
       dialogNotify: false, // hiển thị dialog thông báo cho người dùng
       notifyMessage: "", // message được hiển thị trên dialog
       listDepartmentCombobox: [], // Giá trị option truyền vào combobox
+      dialogNotifyDanger: false, // hiển thị dialog cảnh báo
       options: [
         {
           value: 10,
@@ -372,6 +380,14 @@ export default {
      */
     handleCloseDialog() {
       this.dialogNotify = false;
+    },
+
+    /**
+     * Đóng mở cảnh báo
+     * CreatedBy: NGDuong (24/08/2021)
+     */
+    handleCloseDangerDialog() {
+      this.dialogNotifyDanger = false;
     },
 
     /**
@@ -489,6 +505,8 @@ export default {
         this.showLoading = false; // ẩn loading
       } catch (error) {
         this.showLoading = false; // ẩn loading khi có lỗi
+        this.notifyMessage = "Sorry :( Hệ thống đang gặp vấn đề, vui lòng quay trở lại sau!";
+        this.dialogNotifyDanger = true; // hiển thị dialog cảnh báo
       }
     },
 

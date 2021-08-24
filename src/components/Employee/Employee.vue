@@ -95,9 +95,6 @@ export default {
   //#region Data
   data() {
     return {
-      /**
-       * thay đổi giá trị prop
-       */
       isCheckBoxSingle: false, // Thay đổi giá trị prop
       dialogConfirm: false, // cảnh báo khi đóng dialog
       showDrop: false, // đóng mở dropdown
