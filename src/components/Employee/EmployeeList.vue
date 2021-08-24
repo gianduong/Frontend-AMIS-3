@@ -53,6 +53,23 @@
       </v-dialog>
       <!--  -->
       <!-- End of dialog notify -->
+
+      <!-- region snackbar -->
+      <v-snackbar v-model="snackbar" top color="red lighten-1">
+        {{ messageSnackbar }}
+
+        <template v-slot:action="{ attrs }">
+          <v-btn
+            color="deep-purple darken-4"
+            text
+            v-bind="attrs"
+            @click="snackbar = false"
+          >
+            Đóng
+          </v-btn>
+        </template>
+      </v-snackbar>
+      <!-- end region -->
     </div>
     <!-- main content -->
     <!--  -->
@@ -274,6 +291,8 @@ export default {
       notifyMessage: "", // message được hiển thị trên dialog
       listDepartmentCombobox: [], // Giá trị option truyền vào combobox
       dialogNotifyDanger: false, // hiển thị dialog cảnh báo
+      snackbar: false, // Hiển thị snackbar cảnh báo
+      messageSnackbar: "", // thông điệp snackbar
       options: [
         {
           value: 10,
@@ -504,9 +523,10 @@ export default {
         }
         this.showLoading = false; // ẩn loading
       } catch (error) {
+        this.messageSnackbar =
+          "Sorry :( Hệ thống đang gặp vấn đề, vui lòng quay trở lại sau!";
+        this.snackbar = true; // hiển thị thông báo
         this.showLoading = false; // ẩn loading khi có lỗi
-        this.notifyMessage = "Sorry :( Hệ thống đang gặp vấn đề, vui lòng quay trở lại sau!";
-        this.dialogNotifyDanger = true; // hiển thị dialog cảnh báo
       }
     },
 
@@ -527,6 +547,9 @@ export default {
         }));
         this.showLoading = false; // ẩn loading
       } catch (error) {
+        this.messageSnackbar =
+          "Sorry :( Hệ thống đang gặp vấn đề, thử lại xem sao!";
+        this.snackbar = true;
         this.showLoading = false; // ẩn loading khi có lỗi
       }
     },
@@ -553,6 +576,9 @@ export default {
           });
       } catch (error) {
         this.showLoading = false;
+        this.messageSnackbar =
+          "Sorry :( Chức năng này đang có vấn đề, vui lòng quay trở lại sau!";
+        this.snackbar = true; // hiển thị thông báo
       }
     },
 

@@ -27,7 +27,17 @@
         :notifyMessage="notifyMessage"
       />
     </v-dialog>
+    <!-- region snackbar -->
+    <v-snackbar v-model="snackbar" top>
+      {{ messageSnackbar }}
 
+      <template v-slot:action="{ attrs }">
+        <v-btn color="pink" text v-bind="attrs" @click="snackbar = false">
+          Đóng
+        </v-btn>
+      </template>
+    </v-snackbar>
+    <!-- end region -->
     <!-- bảng thêm mới, cập nhật nhân viên -->
     <div class="main-container">
       <!-- thoát -->
@@ -384,6 +394,8 @@ export default {
       dialogNotifyDanger: false, // hiển thị dialog cảnh báo
       dialogNotifyConfirm: false, // hiển thị dialog thông báo
       saveAndAddMode: false, // chế độ cất và thêm
+      snackbar: false, // Hiển thị snackbar cảnh báo
+      messageSnackbar: "", // thông điệp snackbar
       errorNotifyCode: {
         // trạng thái & thông điệp lỗi
         status: false,
@@ -432,13 +444,13 @@ export default {
       );
       this.employee.identityDate = this.formatDateEmployee(
         this.employee.identityDate
-      );    
+      );
     } else {
       this.getNewEmployeeCode();
     }
     setTimeout(() => {
-        this.$refs.toFocus.handleFocus();
-      }, 200);
+      this.$refs.toFocus.handleFocus();
+    }, 200);
   },
   //#endregion
 
@@ -634,7 +646,7 @@ export default {
      */
     validate() {
       var isValid = true;
-      if (this.employee.fullName.length == 0) {
+      if (this.employee.fullName.length == 0) { // Kiểm tra fullname không được để trống
         this.notifyMessage = "Tên không được để trống";
         this.errorNotifyFullName.status = true;
         this.errorNotifyFullName.errorMessage = "Tên không được để trống";
@@ -642,7 +654,7 @@ export default {
         isValid = false;
       }
 
-      if (this.employee.deparmentId.length == 0) {
+      if (this.employee.deparmentId.length == 0) { // kiểm tra không được để trống
         this.notifyMessage = "Đơn vị không được để trống";
         this.errorNotifyDepartment.status = true;
         this.errorNotifyDepartment.errorMessage = "Đơn vị không được để trống";
@@ -650,65 +662,30 @@ export default {
         isValid = false;
       }
 
-      if (this.employee.employeeCode.length == 0) {
+      if (this.employee.employeeCode.length == 0) { // kiểm tra không được để trống
         this.notifyMessage = "Mã nhân viên không được để trống";
         this.errorNotifyCode.status = true;
         this.errorNotifyCode.errorMessage = "Mã không được để trống";
         this.dialogNotifyError = true;
         isValid = false;
       }
-      if (this.employee.dateOfBirth != null) {
-        var dob = this.employee.dateOfBirth.split("-"); // tách thành ngày tháng năm riêng để gán thành Date
-        var dateOfBirth = new Date();
-        dateOfBirth.setFullYear(dob[0], dob[1] - 1, dob[2]); // chuyển thành ngày để so sánh
-        var today = new Date(); // lấy ngày hiện tại
-        var now = new Date();
-        now.setFullYear(
-          today.getFullYear(),
-          today.getMonth(),
-          today.getDate()
-        );
-        if (dateOfBirth > now) { // so sánh
+      if (this.employee.dateOfBirth != null) { // so sánh với ngày hiện tại    
+        if (this.validateDate(this.employee.dateOfBirth)) {   
           this.dialogNotifyError = true;
-          this.notifyMessage =
-            "Ngày sinh không được vượt quá ngày hiện tại";
+          this.notifyMessage = "Ngày sinh không được vượt quá ngày hiện tại";
           isValid = false;
         }
       }
-      if (this.employee.identityDate != null) {
-        var dob = this.employee.identityDate.split("-");// tách thành ngày tháng năm riêng để gán thành Date
-        var identityDate = new Date();
-        identityDate.setFullYear(dob[0], dob[1] - 1, dob[2]); // chuyển thành ngày để so sánh
-        var today = new Date(); // lấy ngày hiện tại
-        var now = new Date();
-        now.setFullYear(
-          today.getFullYear(),
-          today.getMonth(),
-          today.getDate()
-        );
-        if (identityDate > now) { // so sánh
+      if (this.employee.identityDate != null) { // so sánh với ngày hiện tại
+        if (this.validateDate(this.employee.identityDate)) {        
           this.dialogNotifyError = true;
-          this.notifyMessage =
-            "Ngày cấp không được vượt quá ngày hiện tại";
+          this.notifyMessage = "Ngày cấp không được vượt quá ngày hiện tại";
           isValid = false;
         }
       }
       if (
-        this.employee.identityDate != null &&
-        this.employee.dateOfBirth != null
-      ) {
-        var dob = this.employee.dateOfBirth.split("-");
-        var firstDate = new Date();
-        firstDate.setFullYear(dob[0], dob[1] - 1, dob[2]);  // chuyển thành ngày để so sánh
-        var identityDate = this.employee.identityDate.split("-");
-        var secondDate = new Date();
-        secondDate.setFullYear(  // chuyển thành ngày để so sánh
-          identityDate[0],
-          identityDate[1] - 1,
-          identityDate[2]
-        );
-
-        if (firstDate > secondDate) { // so sánh
+        this.employee.identityDate != null && this.employee.dateOfBirth != null) { // so sánh 2 date   
+        if (this.compareDate(this.employee.dateOfBirth, this.employee.identityDate)) {  
           this.dialogNotifyError = true;
           this.notifyMessage = "Ngày cấp CMT không được nhỏ hơn ngày sinh";
           isValid = false;
@@ -716,7 +693,35 @@ export default {
       }
       return isValid;
     },
+    /**
+     * validate thời gian
+     * CreatedBy: NGDuong (24/08/2021)
+     */
+    validateDate(value) {
+      var date = value.split("-"); // tách thành ngày tháng năm riêng để gán thành Date
+      var countOfDay = new Date();
+      countOfDay.setFullYear(date[0], date[1] - 1, date[2]); // chuyển thành ngày để so sánh
+      var today = new Date(); // lấy ngày hiện tại
+      var now = new Date();
+      now.setFullYear(today.getFullYear(), today.getMonth(), today.getDate());
+      if(countOfDay > now) return true;
+      return false;
+    },
+    /**
+     * So sánh 2 ngày bất kì với nhau
+     * CreatedBy: NGDuong (24/08/2021)
+     */
+    compareDate(dateA, dateB){
+      var date1 = dateA.split("-");
+        var firstDate = new Date();
+        firstDate.setFullYear(date1[0], date1[1] - 1, date1[2]); // chuyển thành ngày để so sánh
+        var date2 = dateB.split("-");
+        var secondDate = new Date();
+        secondDate.setFullYear(date2[0], date2[1] - 1, date2[2]); // chuyển thành ngày để so sánh
 
+        if (firstDate > secondDate) return true
+        return false;
+    },
     /**
      * Hàm validate email
      * CreatedBy: NGDuong (19/08/2021)
@@ -728,7 +733,6 @@ export default {
         this.msg["email"] = "";
       }
     },
-
 
     /**
      * format lại giá trị ngày tháng để hiển thị
@@ -768,7 +772,9 @@ export default {
       if (this.modeUpdate) {
         var compareObject = this.employeeDetail;
         compareObject.dateOfBirth = this.formatDate(compareObject.dateOfBirth);
-        compareObject.identityDate = this.formatDate(compareObject.identityDate);
+        compareObject.identityDate = this.formatDate(
+          compareObject.identityDate
+        );
         // kiểm tra xem có thay đổi dữ liệu không, nếu có thì đưa ra cảnh báo, nếu không thì thôi :v
         if (!this.handleCompareObject(compareObject, this.employee)) {
           this.dialogNotifyConfirm = true;
@@ -850,6 +856,10 @@ export default {
             this.notifyMessage = error.response.data.userMsg;
             this.dialogNotifyDanger = true; // hiển thị dialog cảnh báo
           }
+        } else {
+          this.messageSnackbar =
+            "Sorry :( Hệ thống đang gặp vấn đề, thử lại xem sao!";
+          this.snackbar = true;
         }
       }
     },
@@ -860,6 +870,7 @@ export default {
      */
     async handelUpdate() {
       try {
+        debugger
         await axios({
           method: "put",
           url: `https://localhost:44376/api/v1/Employees/${this.employee.employeeId}`,
@@ -886,6 +897,10 @@ export default {
             this.notifyMessage = error.response.data.userMsg;
             this.dialogNotifyDanger = true; // hiển thị dialog cảnh báo
           }
+        } else {
+          this.messageSnackbar =
+            "Sorry :( Hệ thống đang gặp vấn đề, thử lại xem sao!";
+          this.snackbar = true;
         }
       }
     },
